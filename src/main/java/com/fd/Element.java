@@ -18,8 +18,8 @@ class Element implements Serializable, Cloneable {
 	private static final long serialVersionUID = 1098572221246444544L;
 	private static final long DEFAULT_TTL = 120_000;
 
-	public Object key;
-	public Object value;
+	public final Object key;
+	public final Object value;
 	public volatile long ttl = DEFAULT_TTL;// 存活时间 ms
 	private volatile long hitCount = 0;// 命中次数
 	private transient long creationTime;// 创建时间
@@ -66,7 +66,7 @@ class Element implements Serializable, Cloneable {
 	public long getTtl() {
 		return ttl;
 	}
-	public void setHitCount(long hit) {
+	protected void setHitCount(long hit) {
 		hitCountUpdater.set(this, hit);
 	}
 	public void increaseHitCount() {
@@ -75,18 +75,30 @@ class Element implements Serializable, Cloneable {
 	public long getHitCount() {
 		return hitCount;
 	}
-	public Element getPre() {
+	protected Element getPre() {
 		return pre;
 	}
-	public void setPre(Element pre) {
+	protected void setPre(Element pre) {
 		this.pre = pre;
 	}
-	public Element getNext() {
+	protected Element getNext() {
 		return next;
 	}
-	public void setNext(Element next) {
+	protected void setNext(Element next) {
 		this.next = next;
 	}
+	protected void updateCreationTime() {
+		this.creationTime = getCurrentTime();
+	}
+	
+	public Object getKey() {
+		return key;
+	}
+
+	public Object getValue() {
+		return value;
+	}
+
 	/**
 	 * if error,return null
 	 * @return cloned element 
@@ -137,5 +149,7 @@ class Element implements Serializable, Cloneable {
 	private long getCurrentTime() {
 		return System.currentTimeMillis();
 	}
-
+	public String toString() {
+		return key.toString() +"," + value.toString();
+	}
 }
