@@ -48,7 +48,7 @@ public class Cache {
 	 *            , not null
 	 * @return
 	 */
-	public boolean put(Element ele) {
+	public boolean put(final Element ele) {
 		if (ele == null) {
 			return false;
 		}
@@ -100,7 +100,8 @@ public class Cache {
 				if (container.containsKey(key)) {
 					e.increaseHitCount();
 					moveToHead(e);
-					e = e.clone();
+					//not safe if not use clone, but faster
+					//e = e.clone();
 				} else {
 					e = null;
 				}
