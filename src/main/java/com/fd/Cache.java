@@ -9,12 +9,13 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * cache class,all methods here
+ * 
  * @author caoliuyi
  *
  */
 public class Cache {
-	public static final long DEFAULT_MAX_SIZE = 10_000;
-	private long maxSize = DEFAULT_MAX_SIZE;
+	public static final int DEFAULT_MAX_SIZE = 10_000;
+	private int maxSize = DEFAULT_MAX_SIZE;
 	private String cacheName = "";
 	private volatile Element head;
 	private volatile Element tail;
@@ -22,29 +23,33 @@ public class Cache {
 	private final ReadWriteLock lock = new ReentrantReadWriteLock();
 	private final Lock rLock = lock.readLock();
 	private final Lock wLock = lock.writeLock();
-	private final Map<Object,Element> container;
-	
-	public Cache(String name){
+	private final Map<Object, Element> container;
+
+	public Cache(String name) {
+		this(name, DEFAULT_MAX_SIZE);
+	}
+
+	public Cache(String name, int maxSize) {
 		if (name == null) {
 			throw new RuntimeException("name can not be null");
 		}
-		container = new HashMap<Object,Element>(1000);
+		this.maxSize = maxSize;
 		cacheName = name;
+		container = new HashMap<Object, Element>(maxSize);
 		head = null;
 		tail = null;
+
 	}
-	public Cache(String name,long maxSize) {
-		this(name);
-		this.maxSize = maxSize;
-	}
-	
+
 	/**
 	 * put element to cache
-	 * @param ele, not null
+	 * 
+	 * @param ele
+	 *            , not null
 	 * @return
 	 */
 	public boolean put(Element ele) {
-		if(ele == null) {
+		if (ele == null) {
 			return false;
 		}
 		Element tmp = ele.clone();
@@ -63,7 +68,7 @@ public class Cache {
 			if (size == maxSize) {
 				removeLast();
 			}
-			container.put(tmp.key,tmp);
+			container.put(tmp.key, tmp);
 			moveToHead(tmp);
 			currentNum.incrementAndGet();
 		} finally {
@@ -71,8 +76,10 @@ public class Cache {
 		}
 		return true;
 	}
+
 	/**
 	 * get element from cache
+	 * 
 	 * @param key
 	 * @return
 	 */
@@ -134,8 +141,9 @@ public class Cache {
 		head = ele;
 		tail.setNext(head);
 		head.setPre(tail);
-		
+
 	}
+
 	private void removeLast() {
 		if (tail == null) {
 			return;
@@ -153,6 +161,7 @@ public class Cache {
 		}
 		currentNum.decrementAndGet();
 	}
+
 	private void remove(Element ele) {
 		if (ele == null) {
 			return;
@@ -181,24 +190,27 @@ public class Cache {
 
 	/**
 	 * current number of element in cache
+	 * 
 	 * @return
 	 */
 	public long getCurrentSize() {
 		return currentNum.get();
 	}
+
 	public String getCacheName() {
 		return cacheName;
 	}
+
 	public void setCacheName(String cacheName) {
 		this.cacheName = cacheName;
 	}
-	
+
 	public String toString() {
 		rLock.lock();
 		StringBuilder sb = new StringBuilder();
 		try {
 			Element start = head;
-			while(start != null) {
+			while (start != null) {
 				sb.append(start.getValue().toString() + "\n");
 				start = start.getNext();
 				if (start == head) {
@@ -206,7 +218,7 @@ public class Cache {
 				}
 			}
 			return sb.toString();
-		}finally{
+		} finally {
 			rLock.unlock();
 		}
 	}
