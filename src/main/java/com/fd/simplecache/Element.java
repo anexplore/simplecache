@@ -1,4 +1,4 @@
-package com.fd;
+package com.fd.simplecache;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicLongFieldUpdater;
  * @author caoliuyi
  *
  */
-class Element implements Serializable, Cloneable {
+public class Element implements Serializable, Cloneable {
 	private static final long serialVersionUID = 1098572221246444544L;
 	private static final long DEFAULT_TTL = 120_000;
 

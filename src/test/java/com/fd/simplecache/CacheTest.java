@@ -1,4 +1,7 @@
-package com.fd;
+package com.fd.simplecache;
+
+import com.fd.simplecache.Cache;
+import com.fd.simplecache.Element;
 
 import junit.framework.TestCase;
 

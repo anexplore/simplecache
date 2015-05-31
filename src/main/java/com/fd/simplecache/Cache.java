@@ -1,4 +1,4 @@
-package com.fd;
+package com.fd.simplecache;
 
 import java.util.HashMap;
 import java.util.Map;
